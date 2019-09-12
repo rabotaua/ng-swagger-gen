@@ -1,0 +1,13 @@
+export namespace {{modelClass}} {
+{{#modelPropertiesEnums}}
+  export type {{propName}} =
+    {{#list}}
+    | '{{value}}'
+    {{/list}}
+  export const {{propName}} = {
+    {{#list}}
+    {{name}}: '{{value}}' as {{propName}},
+    {{/list}}
+  }
+{{/modelPropertiesEnums}}
+}

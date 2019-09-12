@@ -650,6 +650,25 @@ function processModels(swagger, options) {
     } else {
       simpleType = propertyType(model);
     }
+    var propertiesEnum = []
+
+    for (var property_name in properties) {
+      if (properties[property_name].enum) {
+        var enumTypeName = tagName(property_name) + 'Enum'
+        propertiesEnum.push({
+          propName: enumTypeName,
+          list: properties[property_name].enum.reduce((acc, name) => {
+            acc.push({
+              name: tagName(name),
+              value: name
+            })
+            return acc;
+          }, [])
+        })
+        properties[property_name].enumName = enumTypeName;
+      }
+    }
+
     var modelClass = toClassName(name);
     var descriptor = {
       modelName: name,
@@ -663,13 +682,14 @@ function processModels(swagger, options) {
       modelIsSimple: simpleType != null,
       modelSimpleType: simpleType,
       properties: properties == null ? null :
-        processProperties(swagger, properties, requiredProperties),
+        processProperties(swagger, properties, requiredProperties, modelClass),
       modelExample: example,
       modelAdditionalPropertiesType: additionalPropertiesType,
       modelExampleFile: toExampleFileName(name),
       modelEnumValues: enumValues,
       modelElementType: elementType,
       modelSubclasses: [],
+      modelPropertiesEnums: propertiesEnum,
     };
 
     if (descriptor.properties != null) {
@@ -808,7 +828,7 @@ function mergeTypes(...types) {
 /**
  * Returns the TypeScript property type for the given raw property
  */
-function propertyType(property) {
+function propertyType(property, modelClass) {
   var type;
   if (property === null || property.type === null) {
     return 'null';
@@ -846,7 +866,7 @@ function propertyType(property) {
       return 'null';
     case 'string':
       if (property.enum && property.enum.length > 0) {
-        return '\'' + property.enum.join('\' | \'') + '\'';
+        return modelClass ? modelClass + '.' + property.enumName : '\'' + property.enum.join('\' | \'') + '\'';
       }
       else if (property.const) {
         return '\'' + property.const + '\'';
@@ -918,7 +938,7 @@ function propertyType(property) {
  * Process each property for the given properties object, returning an object
  * keyed by property name with simplified property types
  */
-function processProperties(swagger, properties, requiredProperties) {
+function processProperties(swagger, properties, requiredProperties, modelClass) {
   var result = {};
   for (var name in properties) {
     var property = properties[name];
@@ -926,7 +946,7 @@ function processProperties(swagger, properties, requiredProperties) {
       propertyName: name.indexOf('-') === -1 ? name : `"${name}"`,
       propertyComments: toComments(property.description, 1),
       propertyRequired: requiredProperties.indexOf(name) >= 0,
-      propertyType: propertyType(property),
+      propertyType: propertyType(property, modelClass),
     };
     result[name] = descriptor;
   }
