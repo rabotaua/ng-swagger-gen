@@ -1,7 +1,8 @@
 /* tslint:disable */
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { {{#interceptorClass}}HTTP_INTERCEPTORS,{{/interceptorClass}} HttpClientModule } from '@angular/common/http';
 import { {{configurationClass}}, {{configurationInterface}} } from './{{configurationFile}}';
+{{#interceptorClass}}import { {{interceptorClass}} } from './{{interceptorFile}}'{{/interceptorClass}}
 
 {{#services}}import { {{serviceClass}} } from './services/{{serviceFile}}';
 {{/services}}
@@ -31,7 +32,12 @@ export class {{moduleClass}} {
         {
           provide: {{configurationClass}},
           useValue: {rootUrl: customParams.rootUrl}
-        }
+        }{{#interceptorClass}},
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: {{interceptorClass}},
+          multi: true
+        }{{/interceptorClass}}
       ]
     }
   }

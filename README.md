@@ -160,7 +160,7 @@ The files are:
   services, plus the `ApiConfiguration` instance. Your root application module
   should import this module to ensure all services are available via dependency
   injection on your application.
-
+- **api/api-interceptor.service.ts**: Simple `HttpInterceptor` for authorization with API keys ;
 ## Using a configuration file
 On regular usage it is recommended to use a configuration file instead of
 passing command-line arguments to `ng-swagger-gen`. The default configuration
@@ -245,6 +245,7 @@ The supported properties in the JSON file are:
   function called `get<Model>Example()`, which will return the data present in
   the example section.
 - `camelCase`: Generates service methods in camelCase instead of PascalCase.
+- `buildInterceptor`: Generates simple interceptor file. Defaults to false.
 
 ### Configuration file example
 The following is an example of a configuration file which will choose a few
