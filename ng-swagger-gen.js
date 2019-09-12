@@ -19,7 +19,7 @@ function ngSwaggerGen(options) {
   }
 
   setupProxy();
-  
+
   $RefParser.bundle(options.swagger, { dereference: { circular: false } }).then(
     data => {
       doGenerate(data, options);
@@ -60,7 +60,7 @@ function setupProxy() {
  * the correct proxy address. Additionally we need to remove HTTP_PROXY
  * and HTTPS_PROXY environment variables, if present.
  * This is again for globalTunnel compatibility.
- * 
+ *
  * This method only needs to be run when global-agent is used
  */
 function getProxyAndSetupEnv() {
@@ -172,6 +172,8 @@ function doGenerate(swagger, options) {
   var configurationClass = toClassName(prefix + 'Configuration');
   var configurationInterface = toClassName(prefix + 'ConfigurationInterface');
   var configurationFile = toFileName(configurationClass);
+  var interceptorClass = toClassName(prefix + 'Interceptor');
+  var interceptorFile = toFileName(interceptorClass) + '.service';
 
   function applyGlobals(to) {
     to.prefix = prefix;
@@ -180,6 +182,10 @@ function doGenerate(swagger, options) {
     to.configurationClass = configurationClass;
     to.configurationInterface = configurationInterface;
     to.configurationFile = configurationFile;
+    if (options.buildInterceptor) {
+      to.interceptorClass = interceptorClass;
+      to.interceptorFile = interceptorFile;
+    }
     return to;
   }
 
@@ -323,6 +329,13 @@ function doGenerate(swagger, options) {
       }),
       path.join(output, configurationFile + '.ts')
     );
+    if (options.buildInterceptor) {
+      generate(templates.interceptor, applyGlobals({
+          rootUrl: rootUrl,
+        }),
+        path.join(output, interceptorFile + '.ts')
+      );
+    }
   }
 
   // Write the BaseService

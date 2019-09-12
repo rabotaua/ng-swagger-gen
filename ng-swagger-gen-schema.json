@@ -99,6 +99,11 @@
       "description": "Generates service methods in camelCase instead of PascalCase",
       "type": "boolean",
       "default": "false"
+    },
+    "buildInterceptor": {
+      "description": "The assumed tag for operations that don't define any. Defaults to 'Api'",
+      "type": "boolean",
+      "default": "false"
     }
   }
 }
