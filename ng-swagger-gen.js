@@ -19,7 +19,7 @@ function ngSwaggerGen(options) {
   }
 
   setupProxy();
-  
+
   $RefParser.bundle(options.swagger, { dereference: { circular: false } }).then(
     data => {
       doGenerate(data, options);
@@ -60,7 +60,7 @@ function setupProxy() {
  * the correct proxy address. Additionally we need to remove HTTP_PROXY
  * and HTTPS_PROXY environment variables, if present.
  * This is again for globalTunnel compatibility.
- * 
+ *
  * This method only needs to be run when global-agent is used
  */
 function getProxyAndSetupEnv() {
@@ -180,6 +180,13 @@ function doGenerate(swagger, options) {
     to.configurationClass = configurationClass;
     to.configurationInterface = configurationInterface;
     to.configurationFile = configurationFile;
+    for (var optionProp in options) {
+      if (Object.prototype.hasOwnProperty.call(options, optionProp)) {
+        if (optionProp.indexOf(options.customEnvPrefix) === 0) {
+          to[optionProp] = options[optionProp];
+        }
+      }
+    }
     return to;
   }
 
