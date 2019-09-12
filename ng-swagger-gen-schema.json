@@ -104,6 +104,11 @@
       "description": "The assumed tag for operations that don't define any. Defaults to 'Api'",
       "type": "boolean",
       "default": "false"
+    },
+    "customEnvPrefix": {
+      "description": "Set custom prefix for global variables that throw in templates",
+      "type": "string",
+      "default": "env"
     }
   }
 }

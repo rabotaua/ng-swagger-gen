@@ -186,6 +186,13 @@ function doGenerate(swagger, options) {
       to.interceptorClass = interceptorClass;
       to.interceptorFile = interceptorFile;
     }
+    for (var optionProp in options) {
+      if (Object.prototype.hasOwnProperty.call(options, optionProp)) {
+        if (optionProp.indexOf(options.customEnvPrefix) === 0) {
+          to[optionProp] = options[optionProp];
+        }
+      }
+    }
     return to;
   }
 
