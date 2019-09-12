@@ -710,6 +710,7 @@ function processModels(swagger, options) {
       modelElementType: elementType,
       modelSubclasses: [],
       modelPropertiesEnums: propertiesEnum,
+      modelPropertiesHasEnums: propertiesEnum.length > 0
     };
 
     if (descriptor.properties != null) {
