@@ -109,6 +109,11 @@
       "description": "Set custom prefix for global variables that throw in templates",
       "type": "string",
       "default": "env"
+    },
+    "emptyResponsesType": {
+      "description": "Default type for empty response",
+      "type": "string",
+      "default": "null"
     }
   }
 }

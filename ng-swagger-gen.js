@@ -996,7 +996,7 @@ function resolveRef(swagger, ref) {
  * by each HTTP code, whose values are objects with code and type properties,
  * plus a property resultType, which is the type to the HTTP 2xx code.
  */
-function processResponses(swagger, def, path, models) {
+function processResponses(swagger, def, path, models, options) {
   var responses = def.responses || {};
   var operationResponses = {};
   operationResponses.returnHeaders = false;
@@ -1032,7 +1032,7 @@ function processResponses(swagger, def, path, models) {
     };
   }
   if (!operationResponses.resultType) {
-    operationResponses.resultType = 'null';
+    operationResponses.resultType = options.emptyResponsesType || 'null';
   }
   return operationResponses;
 }
@@ -1237,7 +1237,7 @@ function processServices(swagger, models, options) {
       if (operationParameters.length > 0) {
         operationParameters[operationParameters.length - 1].paramIsLast = true;
       }
-      var operationResponses = processResponses(swagger, def, path, models);
+      var operationResponses = processResponses(swagger, def, path, models, options);
       var resultType = operationResponses.resultType;
       var isMultipart = false;
       for (i = 0; i < operationParameters.length; i++) {
