@@ -1036,6 +1036,10 @@ function processResponses(swagger, def, path, models, options) {
   if (!operationResponses.resultType) {
     operationResponses.resultType = options.emptyResponsesType || 'null';
   }
+  operationResponses.operationResponseType = null;
+  if (def.produces && !!def.produces.find(x => x === 'application/json')) {
+    operationResponses.operationResponseType = 'json';
+  }
   return operationResponses;
 }
 
@@ -1296,6 +1300,7 @@ function processServices(swagger, models, options) {
         operationComments: toComments(docString, 1),
         operationParameters: operationParameters,
         operationResponses: operationResponses,
+        operationResponseType: operationResponses.operationResponseType
       };
       var modelResult = models[normalizeModelName(removeBrackets(resultType))];
       var actualType = resultType;
@@ -1315,14 +1320,16 @@ function processServices(swagger, models, options) {
         !modelResult && (resultType.toString().includes('Array<') ||
           resultType.toString().includes('[]'));
       operation.operationIsFile = actualType === 'Blob';
-      operation.operationResponseType =
-        operation.operationIsFile ? 'blob' :
-        operation.operationIsVoid ||
-        operation.operationIsString ||
-        operation.operationIsNumber ||
-        operation.operationIsBoolean ||
-        operation.operationIsEnum ?
-          'text' : 'json';
+      if (!operation.operationResponseType) {
+        operation.operationResponseType =
+          operation.operationIsFile ? 'blob' :
+            operation.operationIsVoid ||
+            operation.operationIsString ||
+            operation.operationIsNumber ||
+            operation.operationIsBoolean ||
+            operation.operationIsEnum ?
+              'text' : 'json';
+      }
       operation.operationIsUnknown = !(
         operation.operationIsVoid ||
         operation.operationIsString ||
