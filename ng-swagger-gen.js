@@ -891,6 +891,8 @@ function propertyType(property, modelClass) {
       }
       else if (property.const) {
         return '\'' + property.const + '\'';
+      } else if (property.format === "date-time") {
+        return 'Date';
       }
       return 'string';
     case 'array':
