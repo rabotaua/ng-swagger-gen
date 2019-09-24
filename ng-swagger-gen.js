@@ -663,7 +663,7 @@ function processModels(swagger, options) {
               value: name
             })
             return acc;
-          }, [])
+          }, []).sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
         })
         properties[property_name].enumName = enumTypeName;
       }
