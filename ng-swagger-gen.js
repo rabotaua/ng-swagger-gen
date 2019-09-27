@@ -1039,6 +1039,8 @@ function processResponses(swagger, def, path, models, options) {
   operationResponses.operationResponseType = null;
   if (def.produces && !!def.produces.find(x => x === 'application/json')) {
     operationResponses.operationResponseType = 'json';
+  } else if (def.produces && !!def.produces.find(x => x === 'application/octet-stream')) {
+    operationResponses.operationResponseType = 'blob';
   }
   return operationResponses;
 }
