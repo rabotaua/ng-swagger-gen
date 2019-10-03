@@ -242,7 +242,10 @@ function doGenerate(swagger, options) {
   // Write the model index
   var modelIndexFile = path.join(output, 'models.ts');
   if (options.modelIndex !== false) {
-    generate(templates.models, { models: modelsArray }, modelIndexFile);
+    generate(templates.models, { models: modelsArray.sort((a, b) => {
+        return a.modelName < b.modelName ? -1 :
+          a.modelName > b.modelName ? 1 : 0;
+      }) }, modelIndexFile);
   } else if (removeStaleFiles) {
     rmIfExists(modelIndexFile);
   }
