@@ -1040,10 +1040,12 @@ function processResponses(swagger, def, path, models, options) {
     operationResponses.resultType = options.emptyResponsesType || 'null';
   }
   operationResponses.operationResponseType = null;
+  operationResponses.operationResponseTypeBlob = false;
   if (def.produces && !!def.produces.find(x => x === 'application/json')) {
     operationResponses.operationResponseType = 'json';
   } else if (def.produces && !!def.produces.find(x => x === 'application/octet-stream')) {
     operationResponses.operationResponseType = 'blob';
+    operationResponses.operationResponseTypeBlob = true;
   }
   return operationResponses;
 }
@@ -1305,7 +1307,8 @@ function processServices(swagger, models, options) {
         operationComments: toComments(docString, 1),
         operationParameters: operationParameters,
         operationResponses: operationResponses,
-        operationResponseType: operationResponses.operationResponseType
+        operationResponseType: operationResponses.operationResponseType,
+        operationResponseTypeBlob: operationResponses.operationResponseTypeBlob
       };
       var modelResult = models[normalizeModelName(removeBrackets(resultType))];
       var actualType = resultType;
